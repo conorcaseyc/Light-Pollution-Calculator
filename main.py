@@ -1,4 +1,4 @@
-print("""Photopollution Calculator for Munster Copyright (C) 2018  Conor Casey
+print """Photopollution Calculator for Munster Copyright (C) 2018  Conor Casey
 This program comes with ABSOLUTELY NO WARRANTY.
 This is free software, and you are welcome to redistribute it
 under certain conditions. For further details, type `license'.
@@ -31,56 +31,56 @@ v1.2.0: Major Changes to Data Calculations
 v1.5.0: Fin 2018 update
 v1.5.1: Emergency Bug Fix Update
 
-Current Edition: v1.5.1""")
+Current Edition: v1.5.1"""
 
 def main():
 	#Imports Population Density Data from the Central Statistics Office
 	import pandas as pd
 	import math
-	pd_filename = 'Data/Population_Density/populationdensitycensustowns.csv'
+	pd_filename = 'data/population_density/populationdensitycensustowns.csv'
 	pd_data = pd.read_csv(pd_filename)
 
-	place_town = input("""
+	place_town = raw_input("""
 Is the name of the town being entered: """).lower()
 	
 	#Licensing Agreement
 	if place_town == "license":
-		license = open('Help and Licensing Agreement/license.txt','r')
+		license = open('LICENSE','r')
 		license_read = license.read()
-		print(license_read)
+		print license_read
 		license.close()
 		main()
 	#Force Closes Application	
 	elif place_town == "quit":
 		quit()
 	elif place_town == "help":
-		text = open('Help and Licensing Agreement/help.txt','r')
+		text = open('help.txt','r')
 		text_read = text.read()
-		print(text_read)
+		print text_read
 		text.close()
 		main()					
 	
 	#Population Density or Town Input
 	elif place_town == "no":
-		place = input("""
+		place = raw_input("""
 Enter the Population Density: """)
 		if place.isdigit() == False:
-			print("It appears you have entered words instead of numbers, please try again.")
+			print "It appears you have entered words instead of numbers, please try again."
 			main()
 		else:
-			print(place)
+			print place
 			user_input = float(place)
 			
 	#If A Town Is Entered
 	elif place_town == "yes":	
-		towns = input("""
+		towns = raw_input("""
 Please input the name of the town: """)
 		town = pd_data[pd_data.Towns.isin([towns])]
 		town.reset_index(inplace = True, drop = True)	
-		print(town) 
+		print town 
 		user_input = float(town.PD)	
 	else:
-		print("Invalid Entry")
+		print "Invalid Entry"
 		main()	
 
 	#Calculation of Light Pollution 		
@@ -108,20 +108,20 @@ Please input the name of the town: """)
 
 	#Result/Output
 	if calculations >= 0:
-		print("""
+		print """
 Photopollution in this location is approximately """ + str(int(math.ceil(lux))) + " LUX, this should" + """
-correlate to""" + conditions())
+correlate to""" + conditions()
 	elif calculations < 0:
-		print("""
+		print """
 Oops, it appears we are getting a negative LUX value. Your population density
-is extremely low, therefore, this correlates to Excellent Stargazing Conditions.""")
+is extremely low, therefore, this correlates to Excellent Stargazing Conditions."""
 
 	#Restarts Program
-	restart = input("""
+	restart = raw_input("""
 Do You Want to Restart the Program: """).lower()
 	if restart == "yes":
-		print("""
-		Restarting...""")
+		print """
+		Restarting..."""
 		main()
 	else:
 		quit()	
