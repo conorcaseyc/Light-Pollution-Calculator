@@ -1,98 +1,117 @@
-changelog = open('CHANGELOG.md','r').read()
-print changelog
+import click
+import math
 
+CRED = '\033[91m'
+CGREEN = '\033[92m'
+CEND = '\033[0m'
+
+@click.group()
 def main():
-	#Imports Population Density Data from the Central Statistics Office
-	import pandas as pd
-	import math
-	pd_filename = 'data/population_density/populationdensitycensustowns.csv'
-	pd_data = pd.read_csv(pd_filename)
+  """
+  This program uses a mathematical model to predict photopollution based on population density for Munster, Ireland.  
+  
+  This work is part of BT Young Scientist project, 'Is It Possible to Create a Mathematical Model to Predict Photopollution Based on Population Density in Munster'
+  
+  To predict the photopollution for a town, you can do:
 
-	place_town = raw_input("""
-Is the name of the town being entered: """).lower()
-	
-	#Licensing Agreement
-	if place_town == "license":
-		license = open('LICENSE','r')
-		license_read = license.read()
-		print license_read
-		license.close()
-		main()
-	#Force Closes Application	
-	elif place_town == "quit":
-		quit()
-	elif place_town == "help":
-		text = open('help.txt','r')
-		text_read = text.read()
-		print text_read
-		text.close()
-		main()					
-	
-	#Population Density or Town Input
-	elif place_town == "no":
-		place = raw_input("""
-Enter the Population Density: """)
-		if place.isdigit() == False:
-			print "It appears you have entered words instead of numbers, please try again."
-			main()
-		else:
-			print place
-			user_input = float(place)
-			
-	#If A Town Is Entered
-	elif place_town == "yes":	
-		towns = raw_input("""
-Please input the name of the town: """)
-		town = pd_data[pd_data.Towns.isin([towns])]
-		town.reset_index(inplace = True, drop = True)	
-		print town 
-		user_input = float(town.PD)	
-	else:
-		print "Invalid Entry"
-		main()	
+  $ python3 main.py town Limerick
 
-	#Calculation of Light Pollution 			
-	lux = 0.03510566 * user_input - 14.32414198
+  To predict the photopollution from population density, you can do:
 
-	#Get Limerick's Population Density In Order to Understand what the LUX Values Mean 
-	limerick = pd_data[pd_data.Towns.isin(["Limerick City"])]
-	limerick.reset_index(inplace = True, drop = True)
-	limerick_pd = float(limerick.PD)
-	limerick_lux = 0.03510566 * (limerick_pd) - 14.32414198
+  $ python3 main.py pd 2500
+  """
+  pass
 
-	#Understanding LUX Values
-	calculations = (lux) / (limerick_lux) * 100
-	def conditions():
-		if calculations >= 80:
-			return " Terrible Stargazing Conditions"
-		elif calculations >= 60:
-			return " Poor Stargazing Conditions"
-		elif calculations >= 40:
-			return " Fair Stargazing Conditions"
-		elif calculations >= 20:
-			return " Good Stargazing Conditions"
-		elif calculations >= 0:
-			return " Excellent Stargazing Conditions"			
+@main.command()
+@click.argument('location', required=False)
+def town(location):
+  """
+  Predict from a town name.
+  """
+  # This is done here to speed up other methods
+  import pandas as pd
 
-	#Result/Output
-	if calculations >= 0:
-		print """
-Photopollution in this location is approximately """ + str(int(math.ceil(lux))) + " LUX, this should" + """
-correlate to""" + conditions()
-	elif calculations < 0:
-		print """
-Oops, it appears we are getting a negative LUX value. Your population density
-is extremely low, therefore, this correlates to Excellent Stargazing Conditions."""
+  # If no location is given, prompt.
+  if not location:
+    location = click.prompt("Please input the name of the town")
 
-	#Restarts Program
-	restart = raw_input("""
-Do You Want to Restart the Program: """).lower()
-	if restart == "yes":
-		print """
-		Restarting..."""
-		main()
-	else:
-		quit()	
-main()
+  pd_filename = 'data/population_density/populationdensitycensustowns.csv'
+  pd_data = pd.read_csv(pd_filename)
+  town = pd_data[pd_data['Towns'].str.contains(location, case=False)]
 
-#End of Code
+  if town.empty:
+    return click.echo(CRED + 'No data on the town: {}'.format(location) + CEND)
+
+  pd = float(town['PD'])
+  print_conditions(pd)
+
+@main.command()
+@click.argument('population_density', required=False)
+def pd(population_density):
+  """
+  Predict from population density.
+  """
+
+  while not population_density or not isfloat(population_density):
+    if population_density:
+      click.echo(CRED + 'Please input a valid population density' + CEND)
+
+    population_density = click.prompt("Please input the population density")
+
+  print_conditions(population_density)
+
+@main.command()
+def version():
+  """
+  Show the version history of the tool
+  """
+  with open('CHANGELOG.md', 'r') as fin:
+    click.echo(fin.read())
+
+@main.command()
+def license():
+  """
+  Show the license of the tool
+  """
+  with open('LICENSE', 'r') as fin:
+    click.echo(fin.read())
+
+
+def get_conditions(lux):
+  # Hard code in limerick's lux
+  limerick_lux = 41.535984211999995
+
+  # Get score as a percent
+  score = (lux / limerick_lux) * 100
+
+  message = '"Excellent Stargazing Conditions"'
+  if score >= 80:
+    message = "Terrible Stargazing Conditions"
+  elif score >= 60:
+    message = "Poor Stargazing Conditions"
+  elif score >= 40:
+    message = "Fair Stargazing Conditions"
+  elif score >= 20:
+    message = "Good Stargazing Conditions"
+
+  return CGREEN + message + CEND, score	
+
+def print_conditions(pd):
+  lux = lux = 0.03510566 * float(pd) - 14.32414198
+  conditions, score = get_conditions(lux)
+  if score >= 0:
+    		click.echo("Photopollution in this location is approximately """ + str(int(math.ceil(lux))) + " LUX, this should " + """correlate to """ + conditions)
+  else:
+  		click.echo("Oops, it appears we are getting a negative LUX value. Your population density is extremely low, therefore, this correlates to Excellent Stargazing Conditions.")
+
+
+def isfloat(value):
+  """Check if a string is a float"""
+  try:
+    float(value)
+    return True
+  except ValueError:
+    return False
+
+if __name__ == "__main__":
+    main()

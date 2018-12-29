@@ -7,7 +7,7 @@
 
 To run this program, you will need:
 
-* [Python](https://www.python.org/) (2.7 or 3)
+* [Python](https://www.python.org/) (Must be python 3)
 * [Pandas](https://pandas.pydata.org/) (can be installed with `pip install pandas`)
 
 If you wish to use `data/solver.py` to develop the model, you will also need to install [Scipy](https://www.scipy.org/) and [Matplotlib](https://matplotlib.org/). 
@@ -24,9 +24,13 @@ $ cd Photopollution-Calculator
 Then you can run the program
 
 ```bash
-$ python main.py
-# alternatively, if you are using python3, you can run main_3.py
+$ python3 main.py town Limerick # Get the conditions for Limerick
+$ python3 main.py pd 1500 # Get the conditions a given population density
 ```
+
+To see the tool being used, have a look at the following recording.
+
+[![asciicast](https://asciinema.org/a/8TDA52pkhfXEOAPplZqTqEM3D.svg)](https://asciinema.org/a/8TDA52pkhfXEOAPplZqTqEM3D)
 
 If you have any problems, please leave an issue.
 For general feedback, please [email the developer](mailto:16ccasey@student.kenmarecs.com).
