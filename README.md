@@ -7,7 +7,7 @@
 
 To run this program, you will need:
 
-* [Python](https://www.python.org/) (Must be python 3)
+* [Python](https://www.python.org/) (must be python 3)
 * [Pandas](https://pandas.pydata.org/) (can be installed with `pip install pandas`)
 
 If you wish to use `data/solver.py` to develop the model, you will also need to install [Scipy](https://www.scipy.org/) and [Matplotlib](https://matplotlib.org/). 
@@ -53,16 +53,16 @@ All these files can be opened using a program called, QGIS (previously known as 
 
 Anyone is welcome to contribute to this project.
 
-### **Did you find a bug?**
+**Did you find a bug?**
 
-* **Ensure the bug was not already reported** by searching on GitHub under [Issues](https://github.com/conorcaseyc/Photopollution-Calculator-for-Munster/issues).
+* Ensure the bug was not already reported by searching on GitHub under [Issues](https://github.com/conorcaseyc/Photopollution-Calculator-for-Munster/issues).
 
 * If you're unable to find an open issue addressing the problem, [open a new one](https://github.com/conorcaseyc/Photopollution-Calculator-for-Munster/issues/new). Be sure to include a **title and clear description**, as much relevant information as possible, and a **code sample** or an **executable test case** demonstrating the expected behavior that is not occurring.
 * If possible, use the relevant bug report templates to create the issue. Simply copy the content of the appropriate template into a .rb file, make the necessary changes to demonstrate the issue, and **paste the content into the issue description**:
   * [**Bug Report** issues](https://github.com/rails/rails/blob/master/guides/bug_report_templates/active_record_master.rb)
   * [**Feature Request** issues](https://github.com/rails/rails/blob/master/guides/bug_report_templates/action_controller_master.rb)
 
-### **Did you write a patch that fixes a bug?**
+**Did you write a patch that fixes a bug?**
 
 * Open a new GitHub pull request with the patch.
 * Ensure the PR description clearly describes the problem and solution. Include the relevant issue number if applicable.
